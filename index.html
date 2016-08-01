@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html ng-app="AdminApp">
+<head>
+	<title>Fab2u</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Angular Material style sheet -->
+	<link rel="stylesheet" href="node_modules/angular-material/angular-material.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body ng-controller="MenuCtrl">
+
+ 	<md-content>
+      <div layout="column" >
+      <md-card class="md-padding">
+              <md-card-title>
+                <md-card-title-text>
+                  <span class="md-headline">Vendor Menu</span>
+                  <span class="md-subhead">Vendor Name</span>
+                </md-card-title-text>
+              </md-card-title>
+              <md-card-content>
+      			<form name="vendorMenuForm">
+      				<div layout="row" layout-align="center center">
+      					<div flex="25">
+      						<md-input-container class="md-block" flex-gt-sm>
+      							<label>Service Id</label>
+      							<md-select ng-model="vendorMenus.serviceId">
+      								<md-option ng-repeat="serviceId in serviceIds" value="{{serviceId}}" required>
+      								{{serviceId}}
+      								</md-option>
+      							</md-select>
+      						</md-input-container>
+      					</div>
+      					<div flex="50">
+      						<md-input-container class="md-block" flex-gt-sm>
+      				            <label>Menu Item</label>
+      				            <input ng-model="vendorMenus.menuItem" type="text" required>
+      				          </md-input-container>
+      					</div>
+      					<div flex="25">
+      						<md-checkbox aria-label="male-checkbox" ng-model="vendorMenus.maleFlag">
+      		               M
+      		              </md-checkbox>
+      		              <md-checkbox aria-label="female-checkbox" ng-model="vendorMenus.femaleFlag">
+      		               F
+      		              </md-checkbox>
+      		              <md-checkbox aria-label="kid-checkbox" ng-model="vendorMenus.kidFlag">
+      		               K
+      		              </md-checkbox>
+      					</div>
+      				</div>
+      		    	<div layout="row" layout-wrap>
+      					
+      					<div flex>
+      						<md-input-container class="md-block" flex-gt-sm>
+      				            <label>Vendor Price</label>
+      				            <input ng-model="vendorMenus.vendorPrice" type="number" required>
+      				          </md-input-container>
+      					</div>
+      					<div flex>
+      						<md-input-container class="md-block" flex-gt-sm>
+      				            <label>Fab2u Price</label>
+      				            <input ng-model="vendorMenus.fab2uPrice" type="number" required>
+      				          </md-input-container>
+      					</div>
+      					<div flex>
+      						<md-input-container class="md-block" flex-gt-sm>
+      				            <label>Customer Price</label>
+      				            <input ng-model="vendorMenus.customerPrice" type="number" required>
+      				          </md-input-container>
+      					</div>
+      		    	</div>
+      			</form>
+              </md-card-content>
+              <md-card-actions layout="row" layout-align="end center">
+              	<md-button
+      				class="md-raised md-primary"
+      				ng-disabled="vendorMenuForm.$pristine"
+      				ng-click="reset()"
+      			>Reset</md-button>
+      			<md-button
+      				ng-hide="editItem"
+      				class="md-raised md-primary"
+      				ng-disabled="vendorMenuForm.$invalid || !vendorMenus.maleFlag && !vendorMenus.femaleFlag && !vendorMenus.kidFlag"
+      				ng-click="addMenu(vendorMenus)"
+      			>Add</md-button>
+      			<md-button
+      				ng-show="editItem"
+      				class="md-raised md-primary"
+      				ng-disabled="vendorMenuForm.$invalid || !vendorMenus.maleFlag && !vendorMenus.femaleFlag && !vendorMenus.kidFlag"
+      				ng-click="updateMenu(vendorMenus,menu.menuItemId)"
+      			>Update</md-button>
+              </md-card-actions>
+            </md-card></div>
+
+      <div layout="column">
+	      <md-card class="md-padding">
+	      <div ng-show="menus.length<=0" ><h1>{{menuStatus}}</h1></div>
+            <table ng-show="menus.length>0">
+            	<tr>
+				   <th>Service Id</th>
+				   <th>Menu Item</th>
+				   <th>Gender</th>
+				   <th>V Price</th>
+				   <th>F Price</th>
+				   <th>C Price</th>
+				   <th>Edit</th>
+				   <th>Status</th>
+				   <th>Delete</th>
+			 	</tr>
+	      		  <tr ng-repeat="menu in menus">
+	      		    <td>{{ menu.serviceId }}</td>
+	      		    <td>{{ menu.menuItem }}</td>
+	      		    <td>{{ menu.maleFlag ? 'M':'' }}{{ menu.femaleFlag ? 'F':'' }}{{ menu.kidFlag ? 'K':'' }}</td>
+	      		    <td>{{ menu.vendorPrice }}</td>
+	      		    <td>{{ menu.fab2uPrice }}</td>
+	      		    <td>{{ menu.customerPrice }}</td>
+	      		    <td>
+	      		    	<md-button 
+	      		    		ng-click="editMenuItem(menus[$index])"
+	      		    		class="md-fab md-mini md-accent md-raised"
+	      		    	>x</md-button>
+	      		    </td>
+	      		    <td ng-show="addMenuItemStatus">Added</td>
+	      		    <td ng-hide="addMenuItemStatus">
+	      		    	<md-progress-circular md-mode="indeterminate" class="md-hue-2" md-diameter="30px"></md-progress-circular>
+	      		    </td>
+	      		    <td>
+	      		    	<md-button
+	      		    		ng-click="deleteMenuItem(menu.menuItemId)"
+	      		    		class="md-fab md-mini md-accent md-raised"
+	      		    	>d</md-button>
+	      		    </td>
+	      		  </tr>
+      		</table>
+
+
+      		<md-card-actions layout="row" layout-align="end center">
+              	<md-button
+              		ng-disabled="menus.length<=0"
+      				class="md-raised md-primary"
+      				ng-click="saveMenu()"
+      			>Save</md-button>
+              </md-card-actions>
+           </md-card>
+         </div>
+    </md-content>
+
+<!-- Angular Material requires Angular.js Libraries -->
+<script src="node_modules/angular/angular.min.js"></script>
+<script src="node_modules/angular-animate/angular-animate.min.js"></script>
+<script src="node_modules/angular-aria/angular-aria.min.js"></script>
+<script src="node_modules/angular-messages/angular-messages.min.js"></script>
+<!-- <script src="lib/bower_components/angular-route/angular-route.min.js"></script> -->
+
+<!-- Angular Material Library -->
+<script src="node_modules/angular-material/angular-material.min.js"></script>
+
+<!-- App -->
+<script type="text/javascript" src="js/app.js"></script>
+<!-- <script type="text/javascript" src="js/config.js"></script> -->
+
+<!-- Controllers -->
+<script type="text/javascript" src="js/controllers/vendorMenuCtrl.js"></script>
+
+<!-- Filters -->
+<script type="text/javascript" src="js/filters/filterToInt.js"></script>
+
+</body>
+</html>
